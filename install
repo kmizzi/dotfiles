@@ -24,3 +24,5 @@ ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
+
+source ~/.zshrc
