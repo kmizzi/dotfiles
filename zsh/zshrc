@@ -48,6 +48,7 @@ alias artisan="php artisan"
 alias byebatch="php artisan queue:prune-batches --unfinished=1"
 alias publish="curl -F file=@- https://publish.ip1.cc"
 alias dotfiles="cd ~/dotfiles"
+alias pubkey="cat ~/.ssh/id_rsa.pub"
 
 function artisan: {
 	php artisan | grep $1
