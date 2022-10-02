@@ -1,139 +1,59 @@
-#
-#                          ⢸⣦⡈⠻⣿⣿⣿⣶⣄
-#                          ⢸⣿⣿⣦⡈⠻⣿⣿⣿⣷⣄
-#                    ⣀⣀⣀⣀⣀⣀⣼⣿⣿⣿⣿ ⠈⠻⣿⣿⣿⣷⣄
-#                    ⠈⠻⣿⣿⣿⣿⣿⡿⠿⠛⠁   ⠈⠻⢿⣿⣿⣷⣄
-#
-# Personal zsh configuration of Jess Archer <jess@jessarcher.com>
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-#--------------------------------------------------------------------------
-# Oh My Zsh
-#--------------------------------------------------------------------------
-
-export ZSH=$HOME/.oh-my-zsh
+export PATH=~/.config/composer/vendor/bin:$PATH
+export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="robbyrussell"
-HYPHEN_INSENSITIVE="true"
-COMPLETION_WAITING_DOTS="true"
-HIST_STAMPS="yyyy-mm-dd"
-VI_MODE_SET_CURSOR=true
-VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
-plugins=(
-    artisan
-    npm
-    vi-mode
-    composer
-    cp
-    dnf
-    docker
-    docker-compose
-    git
-    httpie
-    rsync
-    tmux
-    z
-)
+# Uncomment the following line to disable auto-setting terminal title.
+DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+ENABLE_CORRECTION="true"
+
+COMPLETION_WAITING_DOTS="true"
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-#--------------------------------------------------------------------------
-# Configuration
-#--------------------------------------------------------------------------
+# User configuration
 
-# Decrease delay that vi-mode waits for the end of a key sequence
-export KEYTIMEOUT=15
+source ~/powerlevel10k/powerlevel10k.zsh-theme
 
-typeset -U path cdpath fpath
-path=(
-    $HOME/.local/bin
-    $HOME/.config/composer/vendor/bin
-    $HOME/.go/bin
-    $HOME/.cargo/bin
-    ./vendor/bin
-    ${ANDROID_HOME}tools/
-    ${ANDROID_HOME}platform-tools/
-    $path
-)
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-setopt auto_cd
-cdpath=(
-    $HOME/Code
-)
+alias zshconfig="vim ~/.zshrc"
+alias zsource="source ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias tmuxconfig="vim ~/.tmux.conf"
+alias gdiff="git diff master..$(git_current_branch) | grep \"^diff.*php$\""
+alias test="phpunit-watcher watch --filter="
+alias web2local="~/./ngrok http 8000"
+alias ll='tail -f -n100 storage/logs/`ls -t storage/logs/ | head -1`'
+alias sku="sudo su - sku"
+alias artisan="php artisan"
+alias byebatch="php artisan queue:prune-batches --unfinished=1"
+alias publish="curl -F file=@- https://publish.ip1.cc"
 
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format %d
-zstyle ':completion:*:descriptions' format %B%d%b
-zstyle ':completion:*:complete:(cd|pushd):*' tag-order \
-    'local-directories named-directories'
-
-export EDITOR=vim
-export GIT_EDITOR=vim
-export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-export ARTISAN_OPEN_ON_MAKE_EDITOR=nvr
-export FZF_DEFAULT_COMMAND='ag -u -g ""'
-
-unsetopt sharehistory
-
-#--------------------------------------------------------------------------
-# Aliases
-#--------------------------------------------------------------------------
-
-alias vim="nvim"
-alias copy="xclip -selection clipboard"
-alias paste="xclip -o -selection clipboard"
-alias cat="bat"
-alias webcam="gphoto2 --stdout --capture-movie | ffmpeg -i - -vcodec rawvideo -pix_fmt yuv420p -threads 0 -f v4l2 /dev/video2"
-alias sail='[ -f sail ] && sail || vendor/bin/sail'
-
-# Laravel
-alias a="artisan"
-alias tinker="artisan tinker"
-alias serve="artisan serve"
-alias mfs="artisan migrate:fresh --seed"
-
-# Git
-alias g="git"
-alias gs="git s"
-alias nah="git reset --hard;git clean -df"
-alias co="git checkout"
-alias main='git checkout $([ `git rev-parse --quiet --verify master` ] && echo "master" || echo "main")'
-
-# Docker
-alias d="docker"
-alias dc="docker compose"
-
-open () {
-    xdg-open $* > /dev/null 2>&1
+function artisan: {
+	php artisan | grep $1
 }
 
-composer-link() {
-    composer config repositories.local '{"type": "path", "url": "'$1'"}' --file composer.json
+function addalias {
+        echo "alias $1" >> ~/.zshrc
 }
 
-#--------------------------------------------------------------------------
-# Miscellaneous
-#--------------------------------------------------------------------------
-
-### Fix slowness of pastes with zsh-syntax-highlighting.zsh
-pasteinit() {
-  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+function newbranch {
+	git checkout master
+	git checkout -b SKU-$1
 }
-
-pastefinish() {
-  zle -N self-insert $OLD_SELF_INSERT
-}
-zstyle :bracketed-paste-magic paste-init pasteinit
-zstyle :bracketed-paste-magic paste-finish pastefinish
-### Fix slowness of pastes
-
-if [ -e /home/jess/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jess/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-if [[ $- == *i* && $0 == '/usr/bin/zsh' ]]; then
-    ~/.dotfiles/scripts/login.sh
-fi

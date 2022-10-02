@@ -1,31 +1,13 @@
-#!/usr/bin/env sh
+#!/bin/zsh
 
-DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ln -sf $DOTFILES/zsh/zshrc $HOME/.zshrc
+ln -sf $DOTFILES/zsh/custom_plugins $HOME/.oh-my-zsh/custom/plugins
 
-rm -rf $HOME/.config/nvim
-ln -s $DOTFILES/nvim $HOME/.config/nvim
+#ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
 
-rm -rf $HOME/.config/kitty
-ln -s $DOTFILES/kitty $HOME/.config/kitty
-
-ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
-
-ln -sf $DOTFILES/git/gitconfig $HOME/.gitconfig
-
-ln -sf $DOTFILES/gitignore_global $HOME/.gitignore_global
-
-rm -rf $HOME/.config/phpactor
-ln -s $DOTFILES/phpactor $HOME/.config/phpactor
-
-mkdir -p $HOME/.local/bin
-
-ln -sf $DOTFILES/scripts/t $HOME/.local/bin/t
-ln -sf $DOTFILES/scripts/deliver $HOME/.local/bin/deliver
-
-mkdir -p $HOME/.nvm
-ln -sf $DOTFILES/nvm/default-packages $HOME/.nvm/default-packages
+#ln -sf $DOTFILES/git/gitconfig $HOME/.gitconfig // not ready for this until I understand what it does
 
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

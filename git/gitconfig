@@ -59,7 +59,6 @@
     gpgsign = true
 [core]
     editor = vim
-    excludesfile = ~/.gitignore_global
     pager = delta
 [diff]
     tool = vimdiff
