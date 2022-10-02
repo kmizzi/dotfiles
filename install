@@ -3,9 +3,21 @@
 DOTFILES=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ln -sf $DOTFILES/zsh/zshrc $HOME/.zshrc
-ln -sf $DOTFILES/zsh/custom_plugins $HOME/.oh-my-zsh/custom/plugins
 
-#ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
+#select f in zsh/custom_plugins/*; do
+#  FILE= echo $f | sed -r "s/.*.*custom_plugins\/(.*)\..*/\1/";
+#done
+
+## TODO we user to choose the local plugin
+
+echo "What is the name of your local plugin?"
+read local
+
+mkdir -p $HOME/.oh-my-zsh/custom/plugins/local/
+ln -sf $DOTFILES/zsh/custom_plugins/$local.plugin.zsh $HOME/.oh-my-zsh/custom/plugins/local/local.plugin.zsh
+#ln -sf $DOTFILES/zsh/custom_plugins/* $HOME/.oh-my-zsh/custom/plugins/
+
+ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
 
 #ln -sf $DOTFILES/git/gitconfig $HOME/.gitconfig // not ready for this until I understand what it does
 
