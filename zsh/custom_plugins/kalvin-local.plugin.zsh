@@ -16,6 +16,7 @@ function localdev2 {
 }
 
 function start {
+	sudo service ssh start
 	sudo mongod --bind_ip_all --fork --logpath /var/log/mongod.log
 	sudo redis-server --daemonize yes
 	sudo service mysql start

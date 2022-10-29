@@ -43,7 +43,6 @@ alias gdiff="git diff master..$(git_current_branch) | grep \"^diff.*php$\""
 alias test="phpunit-watcher watch --filter="
 alias web2local="~/./ngrok http 8000"
 alias ll='tail -f -n100 storage/logs/`ls -t storage/logs/ | head -1`'
-alias sku="sudo su - sku"
 alias artisan="php artisan"
 alias byebatch="php artisan queue:prune-batches --unfinished=1"
 alias publish="curl -F file=@- https://publish.ip1.cc"
