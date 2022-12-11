@@ -65,3 +65,7 @@ tmx() {
 }
 
 cd ~/
+
+function killq {
+	php artisan queue:prune-batches --hours=1 --unfinished=1 && php artisan queue:restart && php artisan horizon:terminate && sudo php artisan horizon:purge && php artisan horizon:flush && sudo redis-cli flushall && sudo killall -9 php8.1 && sudo supervisorctl restart all && php artisan cache:clear
+}
