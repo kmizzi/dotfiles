@@ -3,6 +3,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 export PATH=~/.config/composer/vendor/bin:$PATH
+export PATH=~/.composer/vendor/bin:$PATH
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="robbyrussell"
@@ -43,6 +44,7 @@ alias gdiff="git diff master..$(git_current_branch) | grep \"^diff.*php$\""
 alias selector="((which rofi>/dev/null && (rofi -show -dmenu -i || true))||(which fzf >/dev/null && fzf))"
 alias git-recent-branches="git reflog show --pretty=format:'%gs ~ %gd' --date=relative | grep \"checkout:\" | grep -oE '[^ ]+ ~ .*' | awk -F~ '!seen[\$1]++' | head -n 15 | sed -n -e \"s/~ HEAD@{/   # /p\" | sed -n -e \"s/}//p\""
 alias git-checkout-recent="git co \`git-recent-branches|selector|sed -n -e \"s/#.*$//p\"\`"
+alias nah="git reset --hard && git clean -df"
 alias web2local="~/./ngrok http 8000"
 alias ll='tail -f -n100 storage/logs/`ls -t storage/logs/ | head -1`'
 alias artisan="php artisan"
@@ -50,6 +52,7 @@ alias byebatch="php artisan queue:prune-batches --unfinished=1"
 alias publish="curl -F file=@- https://publish.ip1.cc"
 alias dotfiles="cd ~/dotfiles"
 alias pubkey="cat ~/.ssh/id_rsa.pub"
+alias ci="composer install"
 
 # test <filename>
 function test {
