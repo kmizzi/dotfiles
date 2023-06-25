@@ -66,6 +66,8 @@ tmx() {
 
 cd ~/
 
-function killq {
-	php artisan queue:prune-batches --hours=1 --unfinished=1 && php artisan queue:restart && php artisan horizon:terminate && sudo php artisan horizon:purge && php artisan horizon:flush && sudo redis-cli flushall && sudo killall -9 php8.1 && sudo supervisorctl restart all && php artisan cache:clear
-}
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="/opt/homebrew/opt/mariadb@10.5/bin:$PATH"}

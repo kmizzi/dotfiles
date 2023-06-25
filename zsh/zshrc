@@ -46,8 +46,7 @@ alias git-recent-branches="git reflog show --pretty=format:'%gs ~ %gd' --date=re
 alias git-checkout-recent="git co \`git-recent-branches|selector|sed -n -e \"s/#.*$//p\"\`"
 alias nah="git reset --hard && git clean -df"
 alias web2local="~/./ngrok http 8000"
-alias ll='tail -f -n100 storage/logs/`ls -t storage/logs/ | head -1`'
-alias artisan="php artisan"
+alias a="php artisan"
 alias byebatch="php artisan queue:prune-batches --unfinished=1"
 alias publish="curl -F file=@- https://publish.ip1.cc"
 alias dotfiles="cd ~/dotfiles"
@@ -70,4 +69,15 @@ function addalias {
 function newbranch {
 	git checkout master
 	git checkout -b SKU-$1
+}
+
+tlog() {
+    log_directory="storage/logs"
+    log_name="${1:-laravel}"
+    log_filename="${log_name}-$(date +'%Y-%m-%d').log"
+    log_file="${log_directory}/${log_filename}"
+    
+    num_lines="${2:-50}"  # Default to tailing 10 lines if no value is provided
+    
+    tail -n "${num_lines}" -f "${log_file}"
 }
