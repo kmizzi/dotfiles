@@ -91,7 +91,7 @@ function www() {
 
     # Change to the selected directory
     if [ -n "$selected_directory" ]; then
-        cd "$selected_directory" || return
+        cd "$selected_directory/current" || return
         echo "You are now in: $selected_directory"
     else
         echo "No directory selected"
