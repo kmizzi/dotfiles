@@ -81,3 +81,20 @@ tlog() {
     
     tail -n "${num_lines}" -f "${log_file}"
 }
+
+function www() {
+    # List directories in /var/www
+    directories=$(find /var/www -maxdepth 1 -type d)
+
+    # Use fzf for interactive selection
+    selected_directory=$(echo "$directories" | fzf --prompt="Select a directory: ")
+
+    # Change to the selected directory
+    if [ -n "$selected_directory" ]; then
+        cd "$selected_directory" || return
+        echo "You are now in: $selected_directory"
+    else
+        echo "No directory selected"
+    fi
+}
+
