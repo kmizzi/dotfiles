@@ -103,3 +103,35 @@ function www() {
     fi
 }
 
+function add_ssh_user() {
+    if [[ -z "$1" || -z "$2" ]]; then
+        echo "Usage: add_ssh_user <username> <ssh-public-key>"
+        return 1
+    fi
+
+    local username="$1"
+    shift  # Shift to access all remaining arguments as the SSH key
+    local ssh_key="$@"
+
+    # Create the new user with a home directory, zsh shell, and "users" as the main group
+    sudo useradd -m -s /usr/bin/zsh -g users "$username"
+
+    # Set the account to be passwordless
+    sudo passwd -d "$username"
+
+    # Create the .ssh directory and set permissions
+    sudo mkdir -p /home/"$username"/.ssh
+    sudo chmod 700 /home/"$username"/.ssh
+
+    # Add the provided SSH key to authorized_keys
+    echo "$ssh_key" | sudo tee /home/"$username"/.ssh/authorized_keys > /dev/null
+    sudo chmod 600 /home/"$username"/.ssh/authorized_keys
+
+    # Adjust ownership of the home and .ssh directories
+    sudo chown -R "$username":users /home/"$username"/.ssh
+
+    echo "Restarting ssh service"
+    sudo systemctl restart ssh
+
+    echo "User $username has been created and configured for passwordless SSH access with 'users' as the main group."
+}
