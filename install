@@ -14,7 +14,8 @@ echo "What is the name of your local plugin?"
 read local
 
 mkdir -p $HOME/.oh-my-zsh/custom/plugins/local/
-ln -sf $DOTFILES/zsh/custom_plugins/$local.plugin.zsh $HOME/.oh-my-zsh/custom/plugins/local/local.plugin.zsh
+touch $HOME/.oh-my-zsh/custom/plugins/local/local.plugin.zsh
+#ln -sf $DOTFILES/zsh/custom_plugins/$local.plugin.zsh $HOME/.oh-my-zsh/custom/plugins/local/local.plugin.zsh
 #ln -sf $DOTFILES/zsh/custom_plugins/* $HOME/.oh-my-zsh/custom/plugins/
 
 ln -sf $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
