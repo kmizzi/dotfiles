@@ -13,7 +13,7 @@ zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="false"
 
 COMPLETION_WAITING_DOTS="true"
 
@@ -31,7 +31,7 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-source ~/powerlevel10k/powerlevel10k.zsh-theme
+#source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -46,16 +46,27 @@ alias git-recent-branches="git reflog show --pretty=format:'%gs ~ %gd' --date=re
 alias git-checkout-recent="git co \`git-recent-branches|selector|sed -n -e \"s/#.*$//p\"\`"
 alias nah="git reset --hard && git clean -df"
 alias web2local="~/./ngrok http 8000"
-alias a="php artisan"
+alias ll='tail -f -n100 storage/logs/`ls -t storage/logs/ | head -1`'
+alias artisan="php artisan"
+alias a="nocorrect php artisan"
 alias byebatch="php artisan queue:prune-batches --unfinished=1"
 alias publish="curl -F file=@- https://publish.ip1.cc"
 alias dotfiles="cd ~/dotfiles"
 alias pubkey="cat ~/.ssh/id_rsa.pub"
 alias ci="composer install"
+alias zshlocal="vi ~/.oh-my-zsh/custom/plugins/local/local.plugin.zsh"
 
 # test <filename>
-function test {
+function  watchdox {
 	phpunit-watcher watch --filter=$1 --testdox
+}
+
+function watch {
+	phpunit-watcher watch --filter=$1
+}
+
+function test {
+	php artisan test --parallel
 }
 
 function artisan: {
@@ -91,13 +102,8 @@ function www() {
 
     # Change to the selected directory
     if [ -n "$selected_directory" ]; then
-        if [ -d "$selected_directory/current" ]; then
-            cd "$selected_directory/current" || return
-            echo "You are now in: $selected_directory/current"
-        else
-            cd "$selected_directory" || return
-            echo "You are now in: $selected_directory"
-        fi
+        cd "$selected_directory" || return
+        echo "You are now in: $selected_directory"
     else
         echo "No directory selected"
     fi
@@ -135,3 +141,74 @@ function add_ssh_user() {
 
     echo "User $username has been created and configured for passwordless SSH access with 'users' as the main group."
 }
+
+export HIST_STAMPS="yyyy-mm-dd"
+
+# Generic aliases useful across machines
+alias pip=pip3
+alias pclaude="claude --dangerously-skip-permissions"
+
+# Git stash aliases - save and restore with interactive selection
+gsave() {
+    if [ -z "$1" ]; then
+        echo -n "Enter stash description: "
+        read description
+        if [ -z "$description" ]; then
+            echo "No description provided. Cancelled."
+            return 1
+        fi
+        git stash push -u -m "$description"
+    else
+        git stash push -u -m "$*"
+    fi
+}
+
+# Interactive git stash restore with fzf
+grestore() {
+    # Check if there are any stashes
+    if ! git stash list >/dev/null 2>&1 || [ -z "$(git stash list)" ]; then
+        echo "No stashes found."
+        return 1
+    fi
+
+    # Use fzf to select a stash interactively with diff preview
+    local stash_selection=$(git stash list --format="%gd: %gs" | \
+        fzf --height=60% --border \
+            --prompt="Select stash to restore: " \
+            --preview="git stash show -p \$(echo {} | cut -d: -f1)" \
+            --preview-window=right:60%:wrap)
+
+    if [ -z "$stash_selection" ]; then
+        echo "No stash selected."
+        return 1
+    fi
+
+    # Extract stash reference (e.g., stash@{0})
+    local stash_ref=$(echo "$stash_selection" | cut -d: -f1)
+
+    echo "Selected: $stash_selection"
+    echo
+
+    # Ask user whether to pop (delete) or apply (keep)
+    echo "How would you like to restore this stash?"
+    echo "1) Pop (restore and delete stash)"
+    echo "2) Apply (restore but keep stash)"
+    echo -n "Choice [1/2]: "
+    read choice
+
+    case $choice in
+        1|"")
+            echo "Popping stash $stash_ref..."
+            git stash pop "$stash_ref"
+            ;;
+        2)
+            echo "Applying stash $stash_ref..."
+            git stash apply "$stash_ref"
+            ;;
+        *)
+            echo "Invalid choice. Cancelled."
+            return 1
+            ;;
+    esac
+}
+work() { "$(git rev-parse --show-toplevel)/utils/worktree" "$@"; }

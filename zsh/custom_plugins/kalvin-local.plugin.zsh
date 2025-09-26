@@ -70,4 +70,36 @@ cd ~/
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-export PATH="/opt/homebrew/opt/mariadb@10.5/bin:$PATH"}
+export PATH="/opt/homebrew/opt/mariadb@10.5/bin:$PATH"
+
+# Machine-specific configuration moved from zshrc
+
+# Herd injected PHP 8.3 configuration.
+export HERD_PHP_83_INI_SCAN_DIR="/Users/kalvin/Library/Application Support/Herd/config/php/83/"
+
+# Herd injected PHP binary.
+export PATH="/Users/kalvin/Library/Application Support/Herd/bin/":$PATH
+#export PATH="/opt/homebrew/opt/mariadb@10.11/bin:$PATH"
+export NODE_OPTIONS=--openssl-legacy-provider
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/kalvin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/kalvin/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/kalvin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/kalvin/google-cloud-sdk/completion.zsh.inc'; fi
+
+#export PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig
+#export OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
+#export PATH=$(brew --prefix curl)/bin:$PATH
+
+export PATH="$PWD/vendor/bin:$PATH"
+export PATH="$PATH:$(pwd)"
+export PATH="$HOME/bin:$PATH"
+alias skudock='/Users/kalvin/code/sku.io/skudock'
+alias odocs='cd "/Users/kalvin/Library/Mobile Documents/iCloud~md~obsidian/Documents/Kalvin"'
+alias cdocs='cd "/Users/kalvin/Library/Mobile Documents/iCloud~md~obsidian/Documents/Kalvin" && claude'
+source ~/.zshrc_tsv_helper
+
+#. "$HOME/.atuin/bin/env"
+
+#eval "$(atuin init zsh)"
